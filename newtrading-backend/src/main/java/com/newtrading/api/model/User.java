@@ -6,6 +6,12 @@ import lombok.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+public enum AuthProvider {
+    LOCAL,
+    GOOGLE,
+    APPLE
+}
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -19,6 +25,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(nullable = false, unique = true, length = 50)
+    private String username;
+
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 
@@ -27,7 +36,7 @@ public class User {
 
     @Builder.Default
     @Column(name = "auth_provider", nullable = false, length = 50)
-    private String authProvider = "LOCAL";
+    private AuthProvider authProvider = AuthProvider.LOCAL;
 
     @Column(name = "oauth_id", unique = true, length = 255)
     private String oauthId;
@@ -44,5 +53,37 @@ public class User {
         if (createdAt == null) {
             createdAt = OffsetDateTime.now();
         }
+    }
+
+    public User() {
+        // Constructeur par défaut requis par JPA
+    }
+
+    public User(String username, String email, String passwordHash, String authProvider, String oauthId) {
+        this.username = username;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.authProvider = authProvider;
+        this.oauthId = oauthId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
     }
 }

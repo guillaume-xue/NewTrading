@@ -6,11 +6,13 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ==========================================
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    username VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255), -- NULLABLE si authentification Google exclusive
     auth_provider VARCHAR(50) NOT NULL DEFAULT 'LOCAL',
     oauth_id VARCHAR(255),
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_users_username UNIQUE (username),
     CONSTRAINT uq_users_email UNIQUE (email),
     CONSTRAINT uq_users_oauth UNIQUE (oauth_id),
     CONSTRAINT chk_auth_provider CHECK (auth_provider IN ('LOCAL', 'GOOGLE', 'APPLE'))

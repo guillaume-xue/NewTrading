@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface SimulatedTransactionRepository extends JpaRepository<SimulatedTransaction, UUID> {
+public interface VirtualPortfolioRepository extends JpaRepository<VirtualPortfolio, UUID> {
 
 }
