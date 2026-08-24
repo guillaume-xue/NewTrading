@@ -1,89 +1,57 @@
 package com.newtrading.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-public enum AuthProvider {
-    LOCAL,
-    GOOGLE,
-    APPLE
-}
-
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String username;
-
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", length = 255)
+    @Column(name = "password_hash")
     private String passwordHash;
 
-    @Builder.Default
-    @Column(name = "auth_provider", nullable = false, length = 50)
-    private AuthProvider authProvider = AuthProvider.LOCAL;
+    @Column(name = "auth_provider", nullable = false)
+    private String authProvider = "LOCAL";
 
-    @Column(name = "oauth_id", unique = true, length = 255)
+    @Column(name = "oauth_id", unique = true)
     private String oauthId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    // Relation 1:1 bidirectionnelle vers le portefeuille virtuel
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private VirtualPortfolio virtualPortfolio;
+    // Constructeurs
+    public User() {}
 
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = OffsetDateTime.now();
-        }
-    }
-
-    public User() {
-        // Constructeur par défaut requis par JPA
-    }
-
-    public User(String username, String email, String passwordHash, String authProvider, String oauthId) {
-        this.username = username;
+    public User(String email, String passwordHash) {
         this.email = email;
         this.passwordHash = passwordHash;
-        this.authProvider = authProvider;
-        this.oauthId = oauthId;
+        this.authProvider = "LOCAL";
     }
 
-    public String getUsername() {
-        return username;
-    }
+    // Getters et Setters
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getAuthProvider() { return authProvider; }
+    public void setAuthProvider(String authProvider) { this.authProvider = authProvider; }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public String getOauthId() { return oauthId; }
+    public void setOauthId(String oauthId) { this.oauthId = oauthId; }
+
+    public OffsetDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
 }

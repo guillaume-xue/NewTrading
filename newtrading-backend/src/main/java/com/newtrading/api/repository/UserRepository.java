@@ -7,5 +7,12 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+    // Recherche par email pour le login classique et le chargement Spring Security
+    Optional<User> findByEmail(String email);
 
+    // Vérifie si un compte existe déjà lors de l'inscription
+    boolean existsByEmail(String email);
+
+    // Recherche par identifiant OAuth pour la connexion Google OAuth2
+    Optional<User> findByOauthId(String oauthId);
 }

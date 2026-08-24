@@ -1,69 +1,52 @@
 package com.newtrading.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "virtual_portfolios")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class VirtualPortfolio {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    // Jointure 1:1 vers l'utilisateur (clé étrangère user_id)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Builder.Default
-    @Column(name = "current_balance", precision = 18, scale = 8, nullable = false)
+    @Column(name = "current_balance", nullable = false, precision = 18, scale = 8)
     private BigDecimal currentBalance = new BigDecimal("100000.00000000");
 
-    @Builder.Default
-    @Column(name = "initial_balance", precision = 18, scale = 8, nullable = false)
+    @Column(name = "initial_balance", nullable = false, precision = 18, scale = 8)
     private BigDecimal initialBalance = new BigDecimal("100000.00000000");
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    // Relation 1:N vers les transactions
-    @Builder.Default
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SimulatedTransaction> transactions = new ArrayList<>();
+    public VirtualPortfolio() {}
 
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = OffsetDateTime.now();
-        }
+    public VirtualPortfolio(User user) {
+        this.user = user;
+        this.currentBalance = new BigDecimal("100000.00000000");
+        this.initialBalance = new BigDecimal("100000.00000000");
     }
 
-    public BigDecimal getCurrentBalance() {
-        return currentBalance;
-    }
+    // Getters et Setters
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public void setCurrentBalance(BigDecimal currentBalance) {
-        this.currentBalance = currentBalance;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public BigDecimal getInitialBalance() {
-        return initialBalance;
-    }
+    public BigDecimal getCurrentBalance() { return currentBalance; }
+    public void setCurrentBalance(BigDecimal currentBalance) { this.currentBalance = currentBalance; }
 
-    public void setInitialBalance(BigDecimal initialBalance) {
-        this.initialBalance = initialBalance;
-    }
+    public BigDecimal getInitialBalance() { return initialBalance; }
+    public void setInitialBalance(BigDecimal initialBalance) { this.initialBalance = initialBalance; }
 
+    public OffsetDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -1,23 +1,32 @@
 package com.newtrading.api.controller;
 
-import com.newtrading.api.model.SimulatedTransaction;
-import com.newtrading.api.service.TradingService;
+import com.newtrading.api.dto.transaction.request.CreateOrderRequest;
+import com.newtrading.api.dto.transaction.response.TransactionResponse;
+import com.newtrading.api.service.SimulatedTransactionService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/simulated-transactions")
-public class SimulatedTransactionController {
-    private final TradingService tradingService;
+import java.util.UUID;
 
-    public SimulatedTransactionController(TradingService tradingService) {
-        this.tradingService = tradingService;
+@RestController
+@RequestMapping("/api/transactions")
+public class SimulatedTransactionController {
+
+    private final SimulatedTransactionService transactionService;
+
+    public SimulatedTransactionController(SimulatedTransactionService transactionService) {
+        this.transactionService = transactionService;
     }
 
     @PostMapping
-    public ResponseEntity<SimulatedTransaction> createSimulatedTransaction(@Valid @RequestBody SimulatedTransaction transaction) {
-        SimulatedTransaction createdTransaction = tradingService.createSimulatedTransaction(transaction);
-        return ResponseEntity.ok(createdTransaction);
+    public ResponseEntity<TransactionResponse> createOrder(
+            @AuthenticationPrincipal UUID userId,
+            @Valid @RequestBody CreateOrderRequest request) {
+
+        TransactionResponse response = transactionService.executeOrder(userId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
