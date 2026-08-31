@@ -1,9 +1,12 @@
 spring:
+  docker:
+    compose:
+      lifecycle-management: start-and-stop
   datasource:
     # On aligne le port et le nom de la base sur les variables de Docker
-    url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:newtrading}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   # AJOUT : Configuration pour la migration Flyway (pom.xml)
@@ -15,7 +18,7 @@ spring:
   jpa:
     hibernate:
       # PARFAIT : on garde validate car Flyway ou Docker gère la structure
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:

@@ -3,19 +3,13 @@ package com.newtrading.api.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-public enum TriggerCondition {
-    ABOVE,
-    BELOW
-}
+import com.newtrading.api.model.TriggerCondition;
+import com.newtrading.api.model.NotificationChannel;
 
-public enum NotificationChannel {
-    EMAIL,
-    PUSH,
-    BOTH
-}
 
 @Entity
 @Table(name = "alerts")
@@ -43,6 +37,7 @@ public class Alerts {
     @Column(name = "trigger_condition", length = 10, nullable = false)
     private TriggerCondition triggerCondition;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "channel", length = 10, nullable = false)
     private NotificationChannel channel;
 
