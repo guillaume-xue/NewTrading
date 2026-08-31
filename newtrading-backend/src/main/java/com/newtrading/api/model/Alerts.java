@@ -38,7 +38,7 @@ public class Alerts {
     private TriggerCondition triggerCondition;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "channel", length = 10, nullable = false)
+    @Column(name = "notification_channel", length = 10, nullable = false)
     private NotificationChannel channel;
 
     @Column(name = "is_triggered", nullable = false)

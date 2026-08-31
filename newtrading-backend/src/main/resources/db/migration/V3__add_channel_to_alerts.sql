@@ -1,1 +1,0 @@
-ALTER TABLE alerts ADD COLUMN channel VARCHAR(50);
