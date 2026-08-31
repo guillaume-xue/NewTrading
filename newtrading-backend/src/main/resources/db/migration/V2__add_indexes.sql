@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ==========================================
 -- 1. Table : USERS
 -- ==========================================
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255), -- NULLABLE si authentification Google exclusive
@@ -19,7 +19,7 @@ CREATE TABLE users (
 -- ==========================================
 -- 2. Table : VIRTUAL_PORTFOLIOS
 -- ==========================================
-CREATE TABLE virtual_portfolios (
+CREATE TABLE IF NOT EXISTS virtual_portfolios (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     current_balance NUMERIC(18, 8) NOT NULL DEFAULT 100000.00000000,
@@ -33,7 +33,7 @@ CREATE TABLE virtual_portfolios (
 -- ==========================================
 -- 3. Table : SIMULATED_TRANSACTIONS
 -- ==========================================
-CREATE TABLE simulated_transactions (
+CREATE TABLE IF NOT EXISTS simulated_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     portfolio_id UUID NOT NULL,
     asset_code VARCHAR(12) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE simulated_transactions (
 -- ==========================================
 -- 4. Table : ALERTS
 -- ==========================================
-CREATE TABLE alerts (
+CREATE TABLE IF NOT EXISTS alerts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     asset_code VARCHAR(12) NOT NULL,
@@ -66,10 +66,10 @@ CREATE TABLE alerts (
 );
 
 -- Optimise l'affichage de l'historique des transactions d'un portefeuille spécifique
-CREATE INDEX idx_transactions_portfolio_id ON simulated_transactions(portfolio_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_portfolio_id ON simulated_transactions(portfolio_id);
 
 -- Optimise les recherches d'historique de prix par actif
-CREATE INDEX idx_transactions_asset_code ON simulated_transactions(asset_code);
+CREATE INDEX IF NOT EXISTS idx_transactions_asset_code ON simulated_transactions(asset_code);
 
 -- Optimise le moteur d'arrière-plan du backend Spring Boot qui scanne les alertes actives par actif
-CREATE INDEX idx_alerts_lookup ON alerts(asset_code, is_triggered) WHERE is_triggered = FALSE;
+CREATE INDEX IF NOT EXISTS idx_alerts_lookup ON alerts(asset_code, is_triggered) WHERE is_triggered = FALSE;
