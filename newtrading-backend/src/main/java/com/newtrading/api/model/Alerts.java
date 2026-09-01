@@ -1,5 +1,8 @@
 package com.newtrading.api.model;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Column;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +37,7 @@ public class Alerts {
     @Column(name = "target_price", precision = 18, scale = 8, nullable = false)
     private BigDecimal targetPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trigger_condition", length = 10, nullable = false)
     private TriggerCondition triggerCondition;
 
